@@ -1,0 +1,2 @@
+# enum
+Golang enumerators
