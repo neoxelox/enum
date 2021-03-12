@@ -4,7 +4,7 @@
 
 ## What
 
-Enum is a package that provides simple enumerators for Go, with IDE autocompletion and any type support. It may not be the best syntax, but it's so useful.
+Enum is a package that provides simple enumerators for Go, with IDE autocompletion and any type support. It may not be the prettiest syntax, but it's so useful.
 
 ## Install
 
@@ -20,13 +20,13 @@ package main
 import (
 	"fmt"
 
-	"github.com/neoxelox/zeus/pkg/enum"
+	"github.com/neoxelox/enum"
 )
 
 type State string
 
 type enumStates = struct {
-	COMMITTED   State  // You can use any type you want, for example int.
+	COMMITTED   State  // You can use any type you want, for example an int.
 	IN_PROGRESS State
 	DONE        State
 	enum.Enum
