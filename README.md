@@ -62,10 +62,10 @@ States.Aliases()  // [COMMITTED IN_PROGRESS DONE]
 **`Check if Value is in Enum`**
 
 ```go
-States.Is("COMMITTED")  // true
-States.Is("BLOCKED")  // true
-States.Is("IN_PROGRESS")  // false
-States.Is("COMPLETED")  // false
+States.In(State("COMMITTED"))  // true
+States.In(State("BLOCKED"))  // true
+States.In(State("IN_PROGRESS"))  // false
+States.In(State("COMPLETED"))  // false
 ```
 
 **`Get Enum Values`**

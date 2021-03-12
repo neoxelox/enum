@@ -15,10 +15,11 @@ def fail(message):
 @task(
     help={
         "test": "<PACKAGE_PATH>::<TEST_NAME>. If empty, it will run all tests.",
+        "verbose": "Show stdout of tests.",
         "show": "Show coverprofile page.",
     }
 )
-def test(c, test="", show=False):
+def test(c, test="", verbose=False, show=False):
     """Run tests."""
     test_regex = "./..."
 
@@ -26,7 +27,9 @@ def test(c, test="", show=False):
     if len(test) == 2:
         test_regex = f"-run {test[1]} {test[0]}"
 
-    r = c.run(f"go test -race -count=1 -cover {'-coverprofile=coverage.out' if show else ''} {test_regex}")
+    r = c.run(
+        f"go test {'-v' if verbose else ''} -race -count=1 -cover {'-coverprofile=coverage.out' if show else ''} {test_regex}"
+    )
 
     packages = 0
     coverage = 0.0
