@@ -1,0 +1,48 @@
+name: Integration
+
+on:
+  push:
+    tags: [ 'v*.*.*' ]
+
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@master
+        with:
+          persist-credentials: false
+
+      - name: Setup Go 🐻
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.16'
+
+      - name: Setup Python 🐍
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8.6'
+
+      - name: Get CI Cache 📦
+        id: cache-ci
+        uses: actions/cache@v2
+        with:
+          path: .cache/pip
+          key: ${{ runner.os }}-ci
+
+      - name: Setup CI 🧩
+        if: steps.cache-ci.outputs.cache-hit != 'true'
+        run: pip install invoke
+
+      - name: Lint 🪶
+        run: invoke lint -y
+
+      - name: Test 🧪
+        run: invoke test
+
+      - name: Publish 🚀
+        run: |
+          export RELEASE_VERSION=${GITHUB_REF#refs/*/}
+          echo ${RELEASE_VERSION}
+          curl "https://sum.golang.org/lookup/github.com/neoxelox/enum@${RELEASE_VERSION}"
+          curl "https://proxy.golang.org/github.com/neoxelox/enum/@v/${RELEASE_VERSION}.info"
