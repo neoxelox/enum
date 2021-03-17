@@ -4,11 +4,13 @@ import sys
 
 from invoke import task
 
+GOPATH = os.environ.get("GOPATH", os.environ.get("HOME") + "/go")
+
 LINTER_VERSION = "1.38.0"
-LINTER = "$GOPATH/bin/golangci-lint"
+LINTER = f"{GOPATH}/bin/golangci-lint"
 
 TESTER_VERSION = "version"
-TESTER = "$GOPATH/bin/gotestsum"
+TESTER = f"{GOPATH}/bin/gotestsum"
 
 
 def fail(message):
@@ -75,7 +77,7 @@ def devtools(c, yes=False):
 
         c.run(f"go install gotest.tools/gotestsum@latest")
         c.run(
-            f"curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sudo sh -s -- -b $GOPATH/bin v{LINTER_VERSION}"
+            f"curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sudo sh -s -- -b {GOPATH}/bin v{LINTER_VERSION}"
         )
 
         if not installed():

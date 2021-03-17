@@ -7,8 +7,6 @@ on:
 jobs:
   integration:
     runs-on: ubuntu-latest
-    env:
-      GOPATH: $HOME/go
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@master
@@ -35,13 +33,6 @@ jobs:
       - name: Setup CI 🧩
         if: steps.cache-ci.outputs.cache-hit != 'true'
         run: pip install invoke
-
-      - name: TestSmth
-        run: |
-          go install gotest.tools/gotestsum@latest
-          ls $HOME/go/bin
-          gotestsum --version
-          $GOPATH/bin/gotestsum --version
 
       - name: Lint 🪶
         run: invoke lint -y
