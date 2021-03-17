@@ -1,3 +1,4 @@
+import os
 import re
 import sys
 
@@ -5,6 +6,9 @@ from invoke import task
 
 LINTER_VERSION = "1.38.0"
 LINTER = "$GOPATH/bin/golangci-lint"
+
+TESTER_VERSION = "version"
+TESTER = "$GOPATH/bin/gotestsum"
 
 
 def fail(message):
@@ -17,10 +21,13 @@ def fail(message):
         "test": "<PACKAGE_PATH>::<TEST_NAME>. If empty, it will run all tests.",
         "verbose": "Show stdout of tests.",
         "show": "Show coverprofile page.",
+        "yes": "Automatically say yes to the following questions.",
     }
 )
-def test(c, test="", verbose=False, show=False):
+def test(c, test="", verbose=False, show=False, yes=False):
     """Run tests."""
+    devtools(c, yes=yes)
+
     test_regex = "./..."
 
     test = test.split("::")
@@ -28,7 +35,7 @@ def test(c, test="", verbose=False, show=False):
         test_regex = f"-run {test[1]} {test[0]}"
 
     r = c.run(
-        f"go test {'-v' if verbose else ''} -race -count=1 -cover {'-coverprofile=coverage.out' if show else ''} {test_regex}"
+        f"{TESTER} --format=testname --no-color=False --  {'-v' if verbose else ''} {f'--parallel={os.cpu_count()}' if os.cpu_count() else ''} -race -count=1 -cover {'-coverprofile=coverage.out' if show else ''} {test_regex}",
     )
 
     packages = 0
@@ -58,14 +65,15 @@ def devtools(c, yes=False):
     """Check and install devtools."""
 
     def installed():
-        r = c.run(f"{LINTER} --version", warn=True, hide="both")
-        installed = not r.failed and LINTER_VERSION in r.stdout
-        return installed
+        tester = TESTER_VERSION in c.run(f"{TESTER} --version", warn=True, hide="both").stdout
+        linter = LINTER_VERSION in c.run(f"{LINTER} --version", warn=True, hide="both").stdout
+        return tester and linter
 
     if not installed():
         if not yes and input("Devtools not installed, install? y/n: ").lower() != "y":
             fail("Aborting as devtools not installed!")
 
+        c.run(f"go install gotest.tools/gotestsum@latest")
         c.run(
             f"curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sudo sh -s -- -b $GOPATH/bin v{LINTER_VERSION}"
         )
@@ -82,4 +90,5 @@ def devtools(c, yes=False):
 def lint(c, yes=False):
     """Run linter."""
     devtools(c, yes=yes)
-    r = c.run(f"{LINTER} run ./... -c .golangci.yaml")
+
+    c.run(f"{LINTER} run ./... -c .golangci.yaml")

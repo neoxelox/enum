@@ -38,7 +38,7 @@ jobs:
         run: invoke lint -y
 
       - name: Test 🧪
-        run: invoke test
+        run: invoke test -y
 
       - name: Publish 🚀
         run: |
