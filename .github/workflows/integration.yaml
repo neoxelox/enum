@@ -37,12 +37,13 @@ jobs:
       - name: TestSmth
         run: |
           go install gotest.tools/gotestsum@latest
-          ls $GOPATH
-          ls $GOPATH/bin
-          ls $GOBIN
-          ls $GOROOT
-          ls $GOROOT/bin
-          ls $GOTOOLDIR
+          echo $GOPATH
+          echo $GOPATH/bin
+          echo $GOBIN
+          echo $GOROOT
+          echo $GOROOT/bin
+          echo $GOTOOLDIR
+          gotestsum --version
           $GOPATH/bin/gotestsum --version
 
       - name: Lint 🪶
