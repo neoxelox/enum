@@ -37,12 +37,7 @@ jobs:
       - name: TestSmth
         run: |
           go install gotest.tools/gotestsum@latest
-          echo $GOPATH
-          echo $GOPATH/bin
-          echo $GOBIN
-          echo $GOROOT
-          echo $GOROOT/bin
-          echo $GOTOOLDIR
+          ls $HOME/go/bin
           gotestsum --version
           $GOPATH/bin/gotestsum --version
 
