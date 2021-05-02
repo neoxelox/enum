@@ -57,7 +57,7 @@ func TestAliasesLite(t *testing.T) {
 
 	aliases := liteStates.Aliases()
 	if len(aliases) != 3 {
-		t.Fatalf("Aliases of Lite enum should be three")
+		t.Fatalf("Aliases of Lite enum should be 3, instead got: %v", len(aliases))
 	}
 
 	expectedAliases := []string{"COMMITTED", "IN_PROGRESS", "DONE"}
@@ -93,7 +93,7 @@ func TestValuesLite(t *testing.T) {
 
 	values := liteStates.Values()
 	if len(values) != 3 {
-		t.Fatalf("Values of Lite enum should be three")
+		t.Fatalf("Values of Lite enum should be 3, instead got: %v", len(values))
 	}
 
 	expectedValues := []LiteState{LiteState("COMMITTED"), LiteState("BLOCKED"), LiteState("DONE")}
@@ -107,10 +107,10 @@ func TestValuesLite(t *testing.T) {
 type StrongState struct{ string }
 
 type enumStrongStates = struct {
+	enum.Enum
 	COMMITTED   StrongState
 	IN_PROGRESS StrongState
 	DONE        StrongState
-	enum.Enum
 }
 
 func TestNewStrong(t *testing.T) {
@@ -150,7 +150,7 @@ func TestAliasesStrong(t *testing.T) {
 
 	aliases := strongStates.Aliases()
 	if len(aliases) != 3 {
-		t.Fatalf("Aliases of Strong enum should be three")
+		t.Fatalf("Aliases of Strong enum should be 3, instead got: %v", len(aliases))
 	}
 
 	expectedAliases := []string{"COMMITTED", "IN_PROGRESS", "DONE"}
@@ -186,10 +186,10 @@ func TestValuesStrong(t *testing.T) {
 
 	values := strongStates.Values()
 	if len(values) != 3 {
-		t.Fatalf("Values of Strong enum should be three")
+		t.Fatalf("Values of Strong enum should be 3, instead got: %v", len(values))
 	}
 
-	expectedValues := []StrongState{StrongState{"COMMITTED"}, StrongState{"BLOCKED"}, StrongState{"DONE"}}
+	expectedValues := []StrongState{{"COMMITTED"}, {"BLOCKED"}, {"DONE"}}
 	for i := range values {
 		if alias := (values[i]).(StrongState); alias != expectedValues[i] {
 			t.Fatalf("Expected alias: %v, instead got: %v, in Strong enum", expectedValues[i], alias)

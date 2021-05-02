@@ -24,14 +24,13 @@ func New(enum enumerator) enumerator {
 
 func (e *Enum) set(enum enumerator) {
 	enumRef := reflect.ValueOf(enum).Elem()
-	numFields := enumRef.NumField() - 1
-
-	e.aliases = make([]string, numFields)
-	e.values = make([]interface{}, numFields)
+	numFields := enumRef.NumField()
 
 	for i := 0; i < numFields; i++ {
-		e.aliases[i] = enumRef.Type().Field(i).Name
-		e.values[i] = enumRef.Field(i).Interface()
+		if enumRef.Type().Field(i).Name != "Enum" {
+			e.aliases = append(e.aliases, enumRef.Type().Field(i).Name)
+			e.values = append(e.values, enumRef.Field(i).Interface())
+		}
 	}
 }
 
